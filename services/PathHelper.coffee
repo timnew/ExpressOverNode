@@ -2,7 +2,7 @@ _ = require('lodash')
 fs = require('fs')
 path = require('path')
 
-makePath = (rootPath) ->
+createPathHelper = (rootPath, isConsolidated) ->
   rootPath = path.normalize rootPath
   result = (args...) ->
     return rootPath if args.length == 0
@@ -18,9 +18,12 @@ makePath = (rootPath) ->
       if stats.isDirectory()
         extName = path.extname(file)
         name = path.basename(file, extName)
-        result[name] = makePath(fullName)
+        result[name] = createPathHelper(fullName)
     result
 
-  result
+  if isConsolidated
+    result.consolidate()
+  else
+    result
 
-exports = module.exports = makePath
+exports = module.exports = createPathHelper

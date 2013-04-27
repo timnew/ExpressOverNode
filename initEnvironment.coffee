@@ -1,7 +1,7 @@
 global.createAutoLoader = require('./services/AutoLoader')
 global.createPathHelper = require('./services/PathHelper')
 
-global.rootPath = createPathHelper(__dirname).consolidate()
+global.rootPath = createPathHelper(__dirname, true)
 
 global.Configuration = require(rootPath.config('configuration'))
 
