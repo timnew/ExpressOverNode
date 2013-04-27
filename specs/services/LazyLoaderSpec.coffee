@@ -1,4 +1,5 @@
-_ = require('underscore')
+_ = require('lodash')
+
 path = require('path')
 createLazyLoader = require('../../services/LazyLoader.coffee')
 
