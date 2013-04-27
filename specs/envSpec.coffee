@@ -8,8 +8,8 @@ describe 'environment', ->
     it 'coffee-script', ->
       require.extensions['.coffee'].should.be.ok
 
-    it 'createLazyLoader', ->
-      createLazyLoader.should.be.instanceOf Function
+    it 'createAutoLoader', ->
+      createAutoLoader.should.be.instanceOf Function
 
     it 'createPathHelper', ->
       createPathHelper.should.be.instanceOf Function

@@ -1,10 +1,10 @@
 _ = require('lodash')
 
 path = require('path')
-createLazyLoader = require('../../services/LazyLoader.coffee')
+createAutoLoader = require('../../services/AutoLoader.coffee')
 
-describe 'LazyLoader', ->
-  subject  = createLazyLoader path.join(__dirname, 'LazyLoaderData')
+describe 'AutoLoader', ->
+  subject  = createAutoLoader path.join(__dirname, 'AutoLoaderData')
 
   it 'should create subject', ->
     subject.should.be.ok

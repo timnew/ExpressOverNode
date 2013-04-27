@@ -2,7 +2,7 @@ _ = require('lodash')
 path = require('path')
 fs = require('fs')
 
-class LazyLoader
+class AutoLoader
   constructor: (@__rootPath) ->
     files = fs.readdirSync(@__rootPath)
 
@@ -17,9 +17,9 @@ class LazyLoader
           get: ->
             require(fullname)
 
-createLazyLoader = (rootPath) ->
-  new LazyLoader(rootPath)
+createAutoLoader = (rootPath) ->
+  new AutoLoader(rootPath)
 
-createLazyLoader.LazyLoader = LazyLoader
+createAutoLoader.AutoLoader = AutoLoader
 
-exports = module.exports = createLazyLoader
+exports = module.exports = createAutoLoader
