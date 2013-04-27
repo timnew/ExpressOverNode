@@ -1,8 +1,8 @@
 path = require('path')
-makePath = require('../../services/PathHelper.coffee')
+createPathHelper = require('../../services/PathHelper.coffee')
 
 describe "Expand Path", ->
-  rootPath  = makePath path.join(__dirname, 'PathHelperData/something/..')
+  rootPath  = createPathHelper path.join(__dirname, 'PathHelperData/something/..')
 
   it "should expand Path root path", ->
     rootPath().should.equal path.join(__dirname, 'PathHelperData')
