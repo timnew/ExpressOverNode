@@ -7,6 +7,8 @@ class Config
 class Config.development extends Config
   port: 3000
 
-class Config.heroku extends Config
+class Config.test extends Config
+
+class Config.production extends Config
 
 module.exports = new Config[process.env.NODE_ENV]()
