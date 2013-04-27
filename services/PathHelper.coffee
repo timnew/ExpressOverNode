@@ -9,16 +9,26 @@ createPathHelper = (rootPath, isConsolidated) ->
     parts = _.flatten [rootPath, args]
     path.join.apply(this, parts)
 
-  result.consolidate = ->
+  result.toPathObject = ->
     self = result()
     files = fs.readdirSync(self)
-    _.forEach files, (file) ->
+    pathObj = {}
+
+    for file in files
       fullName = path.join(self, file)
+      extName =  path.extname(file)
+      name = path.basename(file, extName)
+      pathObj[name] = fullName
+
+    pathObj
+
+  result.consolidate = ->
+    pathObj = result.toPathObject()
+
+    for name, fullName of pathObj
       stats = fs.statSync(fullName)
-      if stats.isDirectory()
-        extName = path.extname(file)
-        name = path.basename(file, extName)
-        result[name] = createPathHelper(fullName)
+      result[name] = createPathHelper(fullName) if stats.isDirectory()
+
     result
 
   if isConsolidated

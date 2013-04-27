@@ -20,6 +20,13 @@ describe "Expand Path", ->
     rootPath.subdir().should.equal path.join(__dirname, 'PathHelperData', 'subdir')
     rootPath.subdir('file').should.equal path.join(__dirname, 'PathHelperData', 'subdir', 'file')
 
+  it 'should create path object', ->
+    pathObj = rootPath.toPathObject()
+    pathObj.should.eql
+      File: path.join(__dirname, 'PathHelperData', 'File')
+      file: path.join(__dirname, 'PathHelperData', 'file.ext')
+      subdir: path.join(__dirname, 'PathHelperData', 'subdir')
+
   it 'should create consolidated instance', ->
     consolidatedRootPath  = createPathHelper path.join(__dirname, 'PathHelperData/something/..'), true
     consolidatedRootPath.subdir.should.be.instanceOf Function
