@@ -1,24 +1,45 @@
 _ = require('lodash')
 path = require('path')
 fs = require('fs')
+createPathHelper = require('./PathHelper')
+
+createLoaderMethod = (host, name, fullName) ->
+  host.__names.push name
+  Object.defineProperty host, name,
+                        get: ->
+                          require(fullName)
 
 class AutoLoader
-  constructor: (@__rootPath) ->
-    files = fs.readdirSync(@__rootPath)
-
+  constructor: (source) ->
     @__names = []
-    _.forEach files, (file) =>
-      extName = path.extname file
-      if require.extensions[extName]?
-        name = path.basename file, extName
-        fullname = path.join(@__rootPath, file)
-        @__names.push name
-        Object.defineProperty this, name,
-          get: ->
-            require(fullname)
+    for name, fullName of source
+      extName = path.extname fullName
+      createLoaderMethod(this, name, fullName) if require.extensions[extName]? or extName == ''
 
-createAutoLoader = (rootPath) ->
-  new AutoLoader(rootPath)
+expandPath = (rootPath) ->
+  createPathHelper(rootPath).toPathObject()
+
+buildSource = (items) ->
+  result = {}
+
+  for item in items
+    extName = path.extname(item)
+    name = path.basename(item, extName)
+    result[name] = item
+
+  result
+
+createAutoLoader = (option) ->
+  pathObj = switch typeof(option)
+    when 'string'
+      expandPath(option)
+    when 'object'
+      if option instanceof Array
+        buildSource(option)
+      else
+        option
+
+  new AutoLoader(pathObj)
 
 createAutoLoader.AutoLoader = AutoLoader
 
