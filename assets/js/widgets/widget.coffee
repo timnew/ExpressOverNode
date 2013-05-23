@@ -59,7 +59,13 @@ class @Widget
       e.stopPropagation()
       context[handlerName].call(context, e)
 
-ContainerMethods =
+$.extend Widget,
+  extend: (args...) ->
+    args.unshift(this)
+    $.extend.apply $, args
+
+# ContainerMethods
+Widget.extend
   register: (widget, widgetType = null) ->
     widgetType = widget.prototype.widgetType ? widget.name unless widgetType
     @namespace[widgetType] = widget
@@ -114,18 +120,6 @@ ContainerMethods =
         result = containerWidget.find(name, false)
         return result if result?
 
-WidgetLocateMethods =
-  findWidget: (selector = '[data-widget]') ->
-    $(selector).data('widget')
-
-  findWidgets: (selector = '[data-widget]') ->
-    $(item).data('widget') for item in $(selector)
-
-  findWidgetByType: (widgetType) ->
-    $("[data-widget='#{widgetType}']").data('widget')
-
-  findWidgetsByType: (widgetType) ->
-    $(item).data('widget') for item in $("[data-widget='#{widgetType}']")
 
 normalizeScope = (scope) ->
   unless scope?
@@ -137,7 +131,7 @@ normalizeScope = (scope) ->
 
   scope
 
-WidgetClassMethods =
+Widget.extend
   activateOnReady: ->
     $ ->
       Widget.activateWidgets()
@@ -195,7 +189,20 @@ WidgetClassMethods =
 
     scope.trigger 'widget.activated', widgets
 
-$.extend Widget, ContainerMethods, WidgetClassMethods, WidgetLocateMethods
+# WidgetLocateMethods
+Widget.extend
+  findWidget: (selector = '[data-widget]') ->
+    $(selector).data('widget')
+
+  findWidgets: (selector = '[data-widget]') ->
+    $(item).data('widget') for item in $(selector)
+
+  findWidgetByType: (widgetType) ->
+    $("[data-widget='#{widgetType}']").data('widget')
+
+  findWidgetsByType: (widgetType) ->
+    $(item).data('widget') for item in $("[data-widget='#{widgetType}']")
+
 
 Widget
   .createNamespace('')
