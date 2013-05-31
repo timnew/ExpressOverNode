@@ -28,11 +28,11 @@ class @Widget
   findParentWidgets: (selector = '[data-widget]') ->
     @findWidgets('parents', selector)
 
-  findSubWidgetsByType: (widgetType) ->
-    @findWidgets('find', "[data-widget='#{widgetType}']:first")
-
   findSubWidgetByType: (widgetType) ->
-    @findWidget('find', "[data-widget='#{widgetType}']")
+    @findWidget('find', "[data-widget='#{widgetType}']:first")
+
+  findSubWidgetsByType: (widgetType) ->
+    @findWidgets('find', "[data-widget='#{widgetType}']")
 
   findParentWidgetByType: (widgetType) ->
     @findWidget('parents', "[data-widget='#{widgetType}']:first")
