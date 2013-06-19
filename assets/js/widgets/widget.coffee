@@ -52,16 +52,28 @@ class @Widget
 
     return
 
-  bindActionHandlers: (selector="[data-action-handler]", context = this) ->
-    @element.find(selector).on 'click', (e) =>
-      handlerName = $(e.currentTarget).data('actionHandler')
-      return console.warn("Action handler \"#{handlerName}\" doesn't exist in widget \"#{this.constructor.name}\"") unless handlerName?
-      e.stopPropagation()
-      context[handlerName].call(context, e)
+  bindActionHandlers: (selector = "[data-action-handler]", context = this) ->
+    for actionHost in @element.find(selector)
+      $actionHost = $(actionHost)
+      if $actionHost.parents('[data-widget]:first')[0] == @element[0] # Should test Dom element instead of jQuery object
+        handlerName = $actionHost.data('actionHandler')
+        if context[handlerName]?
+          $actionHost.on 'click', (e) =>
+            handlerName = $(e.currentTarget).data('actionHandler')
+            e.stopPropagation()
+            context[handlerName].call(context, e)
+        else
+          console.warn("Action handler \"#{handlerName}\" doesn't exist in widget \"#{this.constructor.name}\"")
+
+    return
 
 $.extend Widget,
   extend: (args...) ->
     args.unshift(this)
+    $.extend.apply $, args
+
+  include: (args...) ->
+    args.unshift(this.prototype)
     $.extend.apply $, args
 
 # ContainerMethods
@@ -188,6 +200,34 @@ Widget.extend
       widget.initialize()
 
     scope.trigger 'widget.activated', widgets
+
+  activateWidget: (widgetDom) ->
+    $this = $(widgetDom)
+
+    widgetType = $this.data('widget')
+
+    unless widgetType?
+      console.error "ERROR: Widget name is empty", $this
+      return
+
+    unless typeof(widgetType) is 'string'
+      console.warn 'WARNING: Widget is initialized', $this
+      return
+
+    widgetConstructor = Widget.findInNamespaces(widgetType, $this)
+
+    if widgetConstructor
+      widget = new widgetConstructor($this)
+    else
+      console.error "ERROR: Unknown widget #{widgetType}", $this
+
+    widget.bindDom()
+    widget.enhancePage()
+    widget.initialize()
+
+    $this.trigger 'widget.activated', [widget]
+
+    widget
 
 # WidgetLocateMethods
 Widget.extend
